@@ -466,9 +466,8 @@ public class EventFormActivity extends AppCompatActivity {
             dataValuesWHO e = new dataValuesWHO();
             e.initializeheightForAgeGirls();
 
-            weightforage.addSeries(weightforage_series);
-
             heightforage.addSeries(heightforage_series);
+
             heightforage.addSeries(e.heightForAgeGirlsValues(0, height.size()));
             heightforage.addSeries(e.heightForAgeGirlsValues(1, height.size()));
             heightforage.addSeries(e.heightForAgeGirlsValues(2, height.size()));
@@ -493,16 +492,124 @@ public class EventFormActivity extends AppCompatActivity {
             dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             dialog.getWindow().setGravity(Gravity.BOTTOM);
 
-        }catch (Exception error)
+            e.initializeheightForAgeBoys();
+
+            heightforage.addSeries(heightforage_series);
+
+            heightforage.addSeries(e.heightForAgeBoysValues(0, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(1, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(2, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(3, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(4, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(5, height.size()));
+            heightforage.addSeries(e.heightForAgeBoysValues(6, height.size()));
+            heightforage.getViewport().setScrollable(true);
+            heightforage.getViewport().setScrollableY(true);
+            heightforage.getViewport().setScalable(true);
+            heightforage.getViewport().setScalableY(true);
+            heightforage.getViewport().setYAxisBoundsManual(true);
+            heightforage.getViewport().setMinY(40);
+            heightforage.getViewport().setMaxY(130);
+            //heightforage.getViewport().setMaxY(130);
+            //weightforheight.addSeries(weightforheight_series);
+
+            dialog.show();
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+            e.initializeweightForAgeGirls();
+
+            weightforage.addSeries(weightforage_series);
+
+            weightforage.addSeries(heightforage_series);
+            weightforage.addSeries(e.heightForAgeBoysValues(0, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(1, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(2, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(3, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(4, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(5, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(6, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(7, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(8, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(9, height.size()));
+            weightforage.getViewport().setScrollable(true);
+            weightforage.getViewport().setScrollableY(true);
+            weightforage.getViewport().setScalable(true);
+            weightforage.getViewport().setScalableY(true);
+            weightforage.getViewport().setYAxisBoundsManual(true);
+            weightforage.getViewport().setMinY(40);
+            weightforage.getViewport().setMaxY(130);
+            //heightforage.getViewport().setMaxY(130);
+            //weightforheight.addSeries(weightforheight_series);
+
+            dialog.show();
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+            e.initializeweightForAgeBoys();
+
+            weightforage.addSeries(weightforage_series);
+
+            weightforage.addSeries(heightforage_series);
+            weightforage.addSeries(e.heightForAgeBoysValues(0, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(1, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(2, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(3, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(4, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(5, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(6, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(7, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(8, height.size()));
+            weightforage.addSeries(e.heightForAgeBoysValues(9, height.size()));
+            weightforage.getViewport().setScrollable(true);
+            weightforage.getViewport().setScrollableY(true);
+            weightforage.getViewport().setScalable(true);
+            weightforage.getViewport().setScalableY(true);
+            weightforage.getViewport().setYAxisBoundsManual(true);
+            weightforage.getViewport().setMinY(40);
+            weightforage.getViewport().setMaxY(130);
+            //heightforage.getViewport().setMaxY(130);
+            //weightforheight.addSeries(weightforheight_series);
+
+            dialog.show();
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+            dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+        catch (Exception error)
         {
             System.out.print( "Error in parsing date field: " +  error.toString());
         }
 
     }
-
-
-
-
 
 
 }
