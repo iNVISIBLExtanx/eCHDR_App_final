@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -62,6 +63,14 @@ class OptionSetFieldHolder extends FieldHolder {
 
             }
         });
+
+        if(label.getText().toString().equals("MSGP|Length/Height"))
+        {
+            System.out.println("Our UI is showing");
+        }else
+        {
+            System.out.println("Not Our UI is showing");
+        }
     }
 
     private void setInitialValue(String selectedCode) {
