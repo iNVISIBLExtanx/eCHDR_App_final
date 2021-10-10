@@ -58,5 +58,11 @@ class TextFieldHolder extends FieldHolder {
                     valueSavedListener.onValueSaved(fieldItem.getUid(), editText.getText().toString());
             }
         });
+
+
+
     }
+
+
 }
+

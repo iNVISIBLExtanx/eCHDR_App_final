@@ -325,5 +325,19 @@ public class dataValuesWHO {
         return heightforage_series;
     }
 
+    public Map<Integer, double[]> getHeightForAgeGirls() {
+        return heightForAgeGirls;
+    }
 
+    public Map<Integer, double[]> getHeightForAgeBoys() {
+        return heightForAgeBoys;
+    }
+
+    public Map<Integer, double[]> getWeightForAgeGirls() {
+        return weightForAgeGirls;
+    }
+
+    public Map<Integer, double[]> getWeightForAgeBoys() {
+        return weightForAgeBoys;
+    }
 }

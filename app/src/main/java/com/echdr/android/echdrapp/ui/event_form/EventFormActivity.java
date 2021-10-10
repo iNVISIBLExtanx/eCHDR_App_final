@@ -127,9 +127,19 @@ public class EventFormActivity extends AppCompatActivity {
         programUid = getIntent().getStringExtra(IntentExtra.PROGRAM_UID.name());
         selectedChild = getIntent().getStringExtra(IntentExtra.TEI_ID.name());
 
+
+
+        String sex = Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityInstance().eq(selectedChild)
+                .byTrackedEntityAttribute().eq("lmtzQrlHMYF")
+                .one().blockingGet().value();
+
+        //System.out.println("Selected child is @ eventform " + selectedChild);
+        //System.out.println("Gender of the child is :" + sex);
+
         formType = FormType.valueOf(getIntent().getStringExtra(IntentExtra.TYPE.name()));
 
-        adapter = new FormAdapter(getValueListener(), getImageListener());
+        adapter = new FormAdapter(getValueListener(), getImageListener(), sex);
 
         binding.buttonEndTwo.setOnClickListener(this::finishEnrollment);
         binding.buttonValidateTwo.setOnClickListener(this::evaluateProgramIndicators);

@@ -17,11 +17,16 @@ import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
+    private int height = -1;
+    private int weight = -1;
+    private int age = -1;
+
     private final int OPTIONSET = 98;
     private final int OPTIONSETIMAGE = 99;
     private final OnValueSaved valueSavedListener;
     private final OnImageSelectionClick imageSelectionListener;
     private boolean isListingRendering = true;
+    private String sex;
 
     private List<FormField> fields;
 
@@ -32,10 +37,21 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
         setHasStableIds(true);
     }
 
-    public FormAdapter(OnValueSaved valueSavedListener, OnImageSelectionClick imageSelectionListener) {
+    public FormAdapter(OnValueSaved valueSavedListener,
+                       OnImageSelectionClick imageSelectionListener) {
         this.fields = new ArrayList<>();
         this.valueSavedListener = valueSavedListener;
         this.imageSelectionListener = imageSelectionListener;
+        setHasStableIds(true);
+    }
+
+    public FormAdapter(OnValueSaved valueSavedListener,
+                       OnImageSelectionClick imageSelectionListener,
+                       String sex) {
+        this.fields = new ArrayList<>();
+        this.valueSavedListener = valueSavedListener;
+        this.imageSelectionListener = imageSelectionListener;
+        this.sex = sex;
         setHasStableIds(true);
     }
 
@@ -70,6 +86,47 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @Override
     public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
         holder.bind(fields.get(position));
+        System.out.println(fields.get(position).getFormLabel());
+        System.out.println(fields.get(position).getValue());
+
+
+        if(fields.get(position).getFormLabel().equals("MSGP|Weight"))
+        {
+            try {
+                weight = Integer.parseInt(fields.get(position).getValue());
+            }
+            catch(Exception e)
+            {
+                System.out.println("Value is null");
+            }
+        }
+
+        if(fields.get(position).getFormLabel().equals("MSGP|Length/Height"))
+        {
+            try {
+                height = Integer.parseInt(fields.get(position).getValue());
+            }
+            catch(Exception e)
+            {
+                System.out.println("Value is null");
+            }
+        }
+
+        if(fields.get(position).getFormLabel().equals("MSGP|Age in months"))
+        {
+            try {
+                age = Integer.parseInt(fields.get(position).getValue());
+            }
+            catch(Exception e)
+            {
+                System.out.println("Value is null");
+            }
+        }
+
+        if(height != -1 && weight != -1 && age != -1)
+        {
+            holder.changeColor(age, weight, height, sex);
+        }
     }
 
     @Override
@@ -107,6 +164,49 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
 
         fields.clear();
         fields.addAll(updates);
+
+        //System.out.println("Printing Each time");
+
+        for(int i=0; i<updates.size();i++)
+        {
+            if(updates.get(i).getFormLabel().equals("MSGP|Weight"))
+            {
+                try {
+                    weight = Integer.parseInt(updates.get(i).getValue());
+                }
+                catch(Exception e)
+                {
+                    System.out.println("Value is null");
+                }
+            }
+
+            if(updates.get(i).getFormLabel().equals("MSGP|Length/Height"))
+            {
+                try {
+                    height = Integer.parseInt(updates.get(i).getValue());
+                }
+                catch(Exception e)
+                {
+                    System.out.println("Value is null");
+                }
+            }
+
+            if(updates.get(i).getFormLabel().equals("MSGP|Age in months"))
+            {
+                try {
+                    age = Integer.parseInt(updates.get(i).getValue());
+                }
+                catch(Exception e)
+                {
+                    System.out.println("Value is null");
+                }
+            }
+
+            //holder.changeColor(age, weight, height, sex);
+            System.out.println("Update after every entry " + age
+            + " weight " + weight + " Height " + height);
+
+        }
 
         diffResult.dispatchUpdatesTo(this);
     }
