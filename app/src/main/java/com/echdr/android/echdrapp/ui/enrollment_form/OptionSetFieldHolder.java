@@ -42,6 +42,7 @@ class OptionSetFieldHolder extends FieldHolder {
 
         if (fieldCurrentValue != null)
             setInitialValue(fieldCurrentValue);
+
     }
 
     private void setUpSpinner(String optionSetUid) {
@@ -67,7 +68,6 @@ class OptionSetFieldHolder extends FieldHolder {
             }
         });
 
-
     }
 
     private void setInitialValue(String selectedCode) {
@@ -76,91 +76,5 @@ class OptionSetFieldHolder extends FieldHolder {
                 spinner.setSelection(i + 1);
         }
     }
-
-    public void changeColor(int age, int weight, int height, String sex){
-
-        dataValuesWHO d = new dataValuesWHO();
-        Map<Integer, double[]> heightData;
-        Map<Integer, double[]> weightData;
-        if(sex == "Male")
-        {
-            d.initializeweightForAgeBoys();
-            d.initializeheightForAgeBoys();
-            heightData = d.getHeightForAgeBoys();
-            weightData = d.getWeightForAgeBoys();
-
-        }else{
-            d.initializeheightForAgeGirls();
-            d.initializeweightForAgeGirls();
-            heightData = d.getHeightForAgeGirls();
-            weightData = d.getWeightForAgeGirls();
-        }
-
-
-        if(label.getText().toString().equals("MSGP|Weight for Age"))
-        {
-            System.out.println("Age " + age + " Weight " + weight);
-
-        }
-
-        if(label.getText().toString().equals("MSGP|Length/Height for Age"))
-        {
-            int selection = 0;
-            int i = 0;
-            System.out.println("Height for age | Age " + age + " Height " + height);
-            try{
-                double [] array = heightData.get(age);
-                //int i = 0;
-                for(i=0; i < 7;)
-                {
-                    if (array[i] < height)
-                    {
-                        i++;
-                        //System.out.println("Compared to " + array[i] );
-                    }else
-                    {
-                        break;
-                    }
-                }
-                i = i-1;
-                System.out.println("Selected category is " + i );
-            }catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            //spinner.setBackgroundColor(Color.RED);
-            //0xFFFF0000
-            switch (i){
-                case -1:
-                    selection = 6;
-                    spinner.setBackgroundColor(Color.RED);
-                    break;
-                case 0: selection = 5;
-                    spinner.setBackgroundColor(Color.rgb(255, 165, 0));
-                        break;
-                case 1: selection = 4;
-                    spinner.setBackgroundColor(Color.YELLOW);
-                        break;
-                case 2: selection = 2;
-                    spinner.setBackgroundColor(Color.GREEN);
-                        break;
-                case 3: selection = 1;
-                    spinner.setBackgroundColor(Color.YELLOW);
-                        break;
-                case 4: selection = 3;
-                    spinner.setBackgroundColor(Color.rgb(255, 165, 0));
-                        break;
-                case 5: selection = 7;
-                    spinner.setBackgroundColor(Color.RED);
-                        break;
-
-            }
-            spinner.setSelection(selection);
-
-        }
-
-
-    }
-
 
 }
