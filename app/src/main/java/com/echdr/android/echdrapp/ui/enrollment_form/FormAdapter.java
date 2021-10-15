@@ -41,19 +41,6 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
         this.imageSelectionListener = imageSelectionListener;
         setHasStableIds(true);
 
-
-        // MSGP| Weight for age => bJHCnjX02PN
-        // MSGP| Height for age => SOAtQfInRoy
-        // MSGP| Weight for height => jnzg5BvOj5T
-        for(int i =0; i<fields.size();i++)
-        {
-            if(fields.get(i).getUid().equals("bJHCnjX02PN") ||
-                    fields.get(i).getUid().equals("SOAtQfInRoy") ||
-                        fields.get(i).getUid().equals("jnzg5BvOj5T"))
-                            fields.remove(i);
-
-            System.out.println("Running here");
-        }
     }
 
 

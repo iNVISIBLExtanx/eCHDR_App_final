@@ -84,6 +84,7 @@ public class ChildDetailsActivity extends ListActivity {
 
         trackedEntityInstanceUid = getIntent().getStringExtra(IntentExtra.TRACKED_ENTITY_INSTANCE_UID.name());
 
+        System.out.println("This childs TEI ID is " + trackedEntityInstanceUid);
         try{
             String birthAndImmNum = Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
                     .byTrackedEntityInstance().eq(trackedEntityInstanceUid)
