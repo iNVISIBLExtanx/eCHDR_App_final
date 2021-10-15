@@ -14,11 +14,28 @@ import java.util.Map;
 
 public class dataValuesWHO {
 
-    Map<Integer, double[]> heightForAgeGirls = new HashMap<Integer, double[]>();
-    Map<Integer, double[]> heightForAgeBoys = new HashMap<Integer, double[]>();
-    Map<Integer, double[]> weightForAgeGirls = new HashMap<Integer, double[]>();
-    Map<Integer, double[]> weightForAgeBoys = new HashMap<Integer, double[]>();
+    private static dataValuesWHO instance;
+    Map<Integer, double[]> heightForAgeGirls;
+    Map<Integer, double[]> heightForAgeBoys;
+    Map<Integer, double[]> weightForAgeGirls;
+    Map<Integer, double[]> weightForAgeBoys;
 
+    private dataValuesWHO()
+    {
+        heightForAgeGirls = new HashMap<Integer, double[]>();
+        heightForAgeBoys = new HashMap<Integer, double[]>();
+        weightForAgeGirls = new HashMap<Integer, double[]>();
+        weightForAgeBoys = new HashMap<Integer, double[]>();
+    }
+
+    public static dataValuesWHO getInstance()
+    {
+        if(instance == null)
+        {
+            instance  = new dataValuesWHO();
+        }
+        return instance;
+    }
 
     public void initializeheightForAgeGirls() {
         heightForAgeGirls.put(0, new double[] {43.6,45.4,47.3,49.1,51,52.9,54.7});
@@ -92,7 +109,7 @@ public class dataValuesWHO {
                     new DataPoint(i, heightForAgeGirls.get(i)[pos] ), true, 60);
         }
 
-        heightforage_series.setColor(Color.RED);
+        heightforage_series.setColor(getColor(pos));
         heightforage_series.setThickness(1);
         heightforage_series.setBackgroundColor(getColor(pos));
         heightforage_series.setDrawBackground(true);
@@ -172,7 +189,7 @@ public class dataValuesWHO {
                     new DataPoint(i, heightForAgeBoys.get(i)[pos] ), true, 60);
         }
 
-        heightforage_series.setColor(Color.RED);
+        heightforage_series.setColor(getColor(pos));
         heightforage_series.setThickness(1);
         heightforage_series.setBackgroundColor(getColor(pos));
         heightforage_series.setDrawBackground(true);
@@ -251,7 +268,7 @@ public class dataValuesWHO {
                     new DataPoint(i, weightForAgeGirls.get(i)[pos] ), true, 60);
         }
 
-        weightforage_series.setColor(Color.RED);
+        weightforage_series.setColor(getColor(pos));
         weightforage_series.setThickness(1);
         weightforage_series.setBackgroundColor(getColor(pos));
         weightforage_series.setDrawBackground(true);
@@ -330,7 +347,7 @@ public class dataValuesWHO {
                     new DataPoint(i, weightForAgeBoys.get(i)[pos] ), true, 60);
         }
 
-        weightforage_series.setColor(Color.RED);
+        weightforage_series.setColor(getColor(pos));
         weightforage_series.setThickness(1);
         weightforage_series.setBackgroundColor(getColor(pos));
         weightforage_series.setDrawBackground(true);

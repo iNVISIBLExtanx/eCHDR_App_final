@@ -2,55 +2,38 @@ package com.echdr.android.echdrapp.ui.event_form;
 
 import static android.text.TextUtils.isEmpty;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.echdr.android.echdrapp.R;
 import com.echdr.android.echdrapp.data.Sdk;
 import com.echdr.android.echdrapp.data.service.forms.EventFormService;
-import com.echdr.android.echdrapp.data.service.forms.RuleEngineService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
-import org.hisp.dhis.rules.RuleEngine;
 
 import java.util.Map;
-import java.util.Objects;
 
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.processors.PublishProcessor;
-import io.reactivex.schedulers.Schedulers;
 
 public class AnthropometryActivity extends AppCompatActivity {
 
     private String eventUid;
     private String programUid;
-    private Context context;
-    private String selectedChild;
     private PublishProcessor<Boolean> engineInitialization;
-    private RuleEngineService engineService;
-    private CompositeDisposable disposable;
-    private RuleEngine ruleEngine;
     private FormType formType;
     private GraphView heightGraph;
     private GraphView weightGraph;
+    private String selectedChild;
     private String sex;
 
     private enum IntentExtra {
@@ -84,41 +67,31 @@ public class AnthropometryActivity extends AppCompatActivity {
         heightGraph = findViewById(R.id.heightforageAnthropometry);
         weightGraph = findViewById(R.id.weightforageAnthropometry);
         int currentAge = 24;
+        sex = "Male";
 
         eventUid = getIntent().getStringExtra(AnthropometryActivity.IntentExtra.EVENT_UID.name());
         programUid = getIntent().getStringExtra(AnthropometryActivity.IntentExtra.PROGRAM_UID.name());
         selectedChild = getIntent().getStringExtra(AnthropometryActivity.IntentExtra.TEI_ID.name());
         formType = FormType.valueOf(getIntent().getStringExtra(AnthropometryActivity.IntentExtra.TYPE.name()));
 
-        sex = "Male";
-
-        if(formType == FormType.CHECK)
-        {
-            heightTxt.setText(getDataElement("cDXlUgg1WiZ"));
-            weightTxt.setText(getDataElement("rBRI27lvfY5"));
-        }
-
         engineInitialization = PublishProcessor.create();
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String heightTextValue = heightTxt.getText().toString();
-                String weightTextValue = weightTxt.getText().toString();
+        saveButton.setOnClickListener(v -> {
+            String heightTextValue = heightTxt.getText().toString();
+            String weightTextValue = weightTxt.getText().toString();
 
-                saveDataElement("cDXlUgg1WiZ", heightTextValue); // save height value
-                saveDataElement("rBRI27lvfY5", weightTextValue); // save weight value
+            saveDataElement("cDXlUgg1WiZ", heightTextValue); // save height value
+            saveDataElement("rBRI27lvfY5", weightTextValue); // save weight value
 
-            }
         });
 
-        setupCharts(sex);
-
-        dataValuesWHO d = new dataValuesWHO();
+        dataValuesWHO d =  dataValuesWHO.getInstance();
         Map<Integer, double[]> heightDataWHO;
         Map<Integer, double[]> weightDataWHO;
 
-        if(sex == "Male")
+        setupCharts(d);
+
+        if(sex.equals("Male"))
         {
             d.initializeweightForAgeBoys();
             d.initializeheightForAgeBoys();
@@ -132,6 +105,15 @@ public class AnthropometryActivity extends AppCompatActivity {
             weightDataWHO = d.getWeightForAgeGirls();
         }
 
+        if(formType == FormType.CHECK)
+        {
+            heightTxt.setText(getDataElement("cDXlUgg1WiZ"));
+            weightTxt.setText(getDataElement("rBRI27lvfY5"));
+
+            ChangeColor(heightTxt, heightTxt.getText(), currentAge, heightDataWHO, true);
+            ChangeColor(weightTxt, weightTxt.getText(), currentAge, weightDataWHO, false);
+        }
+
         heightTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -143,7 +125,7 @@ public class AnthropometryActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                ChangeColor(heightTxt, s, currentAge, heightDataWHO);
+                ChangeColor(heightTxt, s, currentAge, heightDataWHO, true);
             }
         });
 
@@ -158,7 +140,7 @@ public class AnthropometryActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                ChangeColor(weightTxt, s, currentAge, weightDataWHO);
+                ChangeColor(weightTxt, s, currentAge, weightDataWHO, false);
             }
         });
 
@@ -173,7 +155,7 @@ public class AnthropometryActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //disposable.clear();
+
     }
 
     @Override
@@ -184,8 +166,6 @@ public class AnthropometryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //if (formType == FormType.CREATE)
-        //EventFormService.getInstance().delete();
         EventFormService.clear();
         setResult(RESULT_OK);
         finish();
@@ -250,9 +230,8 @@ public class AnthropometryActivity extends AppCompatActivity {
         }
     }
 
-    private void setupCharts(String sex)
+    private void setupCharts(dataValuesWHO e)
     {
-        dataValuesWHO e = new dataValuesWHO();
         if(sex.equals("Male"))
         {
             e.initializeheightForAgeBoys();
@@ -275,26 +254,35 @@ public class AnthropometryActivity extends AppCompatActivity {
             }
 
         }
+
+        heightGraph.getViewport().setMaxX(60);
+        weightGraph.getViewport().setMaxX(60);
     }
 
     private void ChangeColor(EditText text, Editable s, int currentAge,
-                             Map<Integer, double[]> data )
+                             Map<Integer, double[]> data , boolean height)
     {
-        int currentValue;
+        float currentValue;
         if(s.toString().isEmpty())
         {
             currentValue = 0;
         }else{
-            currentValue = Integer.parseInt(s.toString());
+            if(height)
+            {
+                currentValue = Float.parseFloat(s.toString()) ;
+            }else
+            {
+                currentValue = Float.parseFloat(s.toString()) / 1000f;
+            }
         }
 
         int category = 0;
         try{
             double [] array = data.get(currentAge);
-            //int i = 0;
             for(category=0; category< 7;)
             {
 
+                assert array != null;
                 if (array[category] < currentValue)
                 {
                     category++;

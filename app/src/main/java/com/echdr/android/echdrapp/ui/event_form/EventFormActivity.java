@@ -424,7 +424,7 @@ public class EventFormActivity extends AppCompatActivity {
             }
         }
 
-        dataValuesWHO d = new dataValuesWHO();
+        dataValuesWHO d = dataValuesWHO.getInstance();
         Map<Integer, double[]> heightDataWHO;
         Map<Integer, double[]> weightDataWHO;
         if(sex == "Male")
@@ -625,7 +625,7 @@ public class EventFormActivity extends AppCompatActivity {
             }
              */
 
-            dataValuesWHO e = new dataValuesWHO();
+            dataValuesWHO e = dataValuesWHO.getInstance();
             e.initializeheightForAgeGirls();
 
             heightforage.addSeries(heightforage_series);
