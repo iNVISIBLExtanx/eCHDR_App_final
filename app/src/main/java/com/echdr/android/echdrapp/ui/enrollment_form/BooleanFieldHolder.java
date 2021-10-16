@@ -13,15 +13,17 @@ import org.hisp.dhis.android.core.common.ValueType;
 class BooleanFieldHolder extends FieldHolder {
 
     private final RadioGroup radioGroup;
+    private FormField fieldItem;
 
     BooleanFieldHolder(@NonNull View itemView, FormAdapter.OnValueSaved valueSavedListener) {
         super(itemView, valueSavedListener);
         this.radioGroup = itemView.findViewById(R.id.radioGroup);
+
     }
 
     void bind(FormField fieldItem) {
         super.bind(fieldItem);
-
+        this.fieldItem = fieldItem;
         if (fieldItem.getValueType() == ValueType.TRUE_ONLY) {
             itemView.findViewById(R.id.optionNo).setVisibility(View.GONE);
         } else {
@@ -36,6 +38,7 @@ class BooleanFieldHolder extends FieldHolder {
             radioGroup.clearCheck();
         }
 
+
         radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
             String value;
             switch (i) {
@@ -49,8 +52,9 @@ class BooleanFieldHolder extends FieldHolder {
                         value = null;
                         break;
             }
-
+            System.out.println("Field item is " + fieldItem.getUid());
             valueSavedListener.onValueSaved(fieldItem.getUid(), value);
         });
+
     }
 }

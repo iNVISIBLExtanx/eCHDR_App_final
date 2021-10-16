@@ -156,6 +156,7 @@ public class EventFormActivity extends AppCompatActivity {
             if (currentValue == null)
                 currentValue = "";
 
+
             try {
                 if (!isEmpty(value)) {
                     valueRepository.blockingSet(value);

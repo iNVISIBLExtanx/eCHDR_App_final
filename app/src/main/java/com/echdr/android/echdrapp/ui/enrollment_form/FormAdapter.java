@@ -75,8 +75,6 @@ public class FormAdapter extends RecyclerView.Adapter<FieldHolder> {
     @Override
     public void onBindViewHolder(@NonNull FieldHolder holder, int position) {
         holder.bind(fields.get(position));
-
-
     }
 
     @Override

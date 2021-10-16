@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,8 +79,8 @@ public class AnthropometryActivity extends AppCompatActivity {
         FloatingActionButton saveButton = findViewById(R.id.anthropometrySave);
         heightGraph = findViewById(R.id.heightforageAnthropometry);
         weightGraph = findViewById(R.id.weightforageAnthropometry);
-        int currentAge = 24;
-        sex = "Male";
+        Button plotGraphButton = findViewById(R.id.plotGraph);
+
 
         eventUid = getIntent().getStringExtra(AnthropometryActivity.IntentExtra.EVENT_UID.name());
         programUid = getIntent().getStringExtra(AnthropometryActivity.IntentExtra.PROGRAM_UID.name());
@@ -86,6 +88,38 @@ public class AnthropometryActivity extends AppCompatActivity {
         formType = FormType.valueOf(getIntent().getStringExtra(AnthropometryActivity.IntentExtra.TYPE.name()));
 
         engineInitialization = PublishProcessor.create();
+
+        TrackedEntityAttributeValue birthday = Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityInstance().eq(selectedChild)
+                .byTrackedEntityAttribute().eq("qNH202ChkV3")
+                .one().blockingGet();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        final int currentAge;
+        int currentAge1;
+        sex = "Male";
+
+        try {
+            Date dob = formatter.parse(birthday.value());
+
+            Date date = new Date();
+
+            long diffInMillies = date.getTime() - dob.getTime();
+
+            currentAge1 = (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS) / 10;
+
+            System.out.println("Current age in weeks is " + currentAge1);
+
+        }
+        catch (Exception error)
+        {
+            currentAge1 = 0;
+            System.out.print( "Error in parsing date field: " +  error.toString());
+        }
+
+
+        currentAge = currentAge1;
 
         saveButton.setOnClickListener(v -> {
             String heightTextValue = heightTxt.getText().toString();
@@ -125,8 +159,15 @@ public class AnthropometryActivity extends AppCompatActivity {
             ChangeColor(heightTxt, heightTxt.getText(), currentAge, heightDataWHO, true);
             ChangeColor(weightTxt, weightTxt.getText(), currentAge, weightDataWHO, false);
 
-            weightTxt.setText(
-                    String.valueOf(Float.parseFloat(weightTxt.getText().toString())*1000));
+            String output;
+            if(weightTxt.getText().toString().isEmpty()){
+                output = "";
+            }
+            else{
+                output =  String.valueOf(Float.parseFloat(weightTxt.getText().toString())*1000);
+            }
+
+            weightTxt.setText(output);
         }
 
         heightTxt.addTextChangedListener(new TextWatcher() {
@@ -141,6 +182,7 @@ public class AnthropometryActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 ChangeColor(heightTxt, s, currentAge, heightDataWHO, true);
+
             }
         });
 
@@ -156,9 +198,22 @@ public class AnthropometryActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 ChangeColor(weightTxt, s, currentAge, weightDataWHO, false);
+
             }
         });
 
+        plotGraphButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveDataElement("cDXlUgg1WiZ", heightTxt.getText().toString()); // save height value
+                String weightTextValue = String.valueOf(Float.parseFloat(weightTxt.getText().toString())/1000f);
+                saveDataElement("rBRI27lvfY5",  weightTextValue); // save height value
+                weightGraph.removeAllSeries();
+                heightGraph.removeAllSeries();
+                setupCharts(d);
+                fillChart();
+            }
+        });
 
     }
 
@@ -311,6 +366,8 @@ public class AnthropometryActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
+
+        System.out.println("Suitable Category is " + category);
 
         switch (category){
             case -1:
