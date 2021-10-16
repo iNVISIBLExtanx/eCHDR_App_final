@@ -24,11 +24,5 @@ abstract class FieldHolder extends RecyclerView.ViewHolder {
         label.setText(fieldItem.getFormLabel());
     }
 
-    public void changeColor(int age, int weight, int height, String sex){
-
-    }
-
-
-
 
 }

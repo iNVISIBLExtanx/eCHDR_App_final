@@ -207,11 +207,7 @@ public class EventsActivity extends ListActivity {
     private EventCollectionRepository getEventRepository() {
         List<String> j = new ArrayList<>();
         j.add(selectedChild);
-        /*
-        EventCollectionRepository eventRepository =
-                Sdk.d2().eventModule().events()
-                        .withTrackedEntityDataValues().byTrackedEntityInstanceUids(j);
-         */
+
         EventCollectionRepository eventRepository = Sdk.d2().eventModule().events()
                 .withTrackedEntityDataValues().byTrackedEntityInstanceUids(j);
 

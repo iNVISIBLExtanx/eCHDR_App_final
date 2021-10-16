@@ -17,11 +17,22 @@ import com.echdr.android.echdrapp.data.Sdk;
 import com.echdr.android.echdrapp.data.service.forms.EventFormService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventCollectionRepository;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.processors.PublishProcessor;
 
@@ -78,7 +89,7 @@ public class AnthropometryActivity extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> {
             String heightTextValue = heightTxt.getText().toString();
-            String weightTextValue = weightTxt.getText().toString();
+            String weightTextValue = String.valueOf(Float.parseFloat(weightTxt.getText().toString())/1000f) ;
 
             saveDataElement("cDXlUgg1WiZ", heightTextValue); // save height value
             saveDataElement("rBRI27lvfY5", weightTextValue); // save weight value
@@ -90,6 +101,7 @@ public class AnthropometryActivity extends AppCompatActivity {
         Map<Integer, double[]> weightDataWHO;
 
         setupCharts(d);
+        fillChart();
 
         if(sex.equals("Male"))
         {
@@ -112,6 +124,9 @@ public class AnthropometryActivity extends AppCompatActivity {
 
             ChangeColor(heightTxt, heightTxt.getText(), currentAge, heightDataWHO, true);
             ChangeColor(weightTxt, weightTxt.getText(), currentAge, weightDataWHO, false);
+
+            weightTxt.setText(
+                    String.valueOf(Float.parseFloat(weightTxt.getText().toString())*1000));
         }
 
         heightTxt.addTextChangedListener(new TextWatcher() {
@@ -316,6 +331,85 @@ public class AnthropometryActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    public void fillChart()
+    {
+        List<String> j = new ArrayList<>();
+        j.add(selectedChild);
+
+        List<Event> eventRepository = Sdk.d2().eventModule().events()
+                .byTrackedEntityInstanceUids(j)
+                .blockingGet();
+
+        List<TrackedEntityDataValue> height = new ArrayList<>();
+
+        // Get birthday of the child
+        TrackedEntityAttributeValue dob = Sdk.d2().trackedEntityModule().trackedEntityAttributeValues()
+                .byTrackedEntityInstance().eq(selectedChild)
+                .byTrackedEntityAttribute().eq("qNH202ChkV3")
+                .one().blockingGet();
+
+        // height graph
+        heightGraph.addSeries(getData(eventRepository, "cDXlUgg1WiZ", dob ));
+
+        // weight graph
+        weightGraph.addSeries(getData(eventRepository, "rBRI27lvfY5", dob ));
+
+    }
+
+
+
+    public LineGraphSeries getData(List<Event> eventRepository, String dataElement,
+                                   TrackedEntityAttributeValue data ){
+        float[] data_list = new float[60];
+        List<TrackedEntityDataValue> event_Array = new ArrayList<>();
+
+        for(int i =0; i < eventRepository.size();i++)
+        {
+            TrackedEntityDataValue d = Sdk.d2().trackedEntityModule()
+                    .trackedEntityDataValues()
+                    .byDataElement().eq(dataElement)
+                    .byEvent().eq(eventRepository.get(i).uid())
+                    .one().blockingGet();
+            if(d != null)
+            {
+                event_Array.add(d);
+            }
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            Date dob = formatter.parse(data.value());
+
+            for (int i = 0; i < event_Array.size(); i++) {
+
+                long diffInMillies = Math.abs(event_Array.get(i).created().getTime()
+                        - dob.getTime());
+
+                int diff = (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS) / 10;
+
+                System.out.println("Week number is " + diff);
+                data_list[diff] = Float.parseFloat(event_Array.get(i).value());
+            }
+        }
+        catch (Exception error)
+        {
+            System.out.print( "Error in parsing date field: " +  error.toString());
+        }
+
+        LineGraphSeries<DataPoint> line_series  = new LineGraphSeries<DataPoint>();
+
+        for(int i=0; i< 60; i++)
+        {
+            line_series.appendData(
+                    new DataPoint(i, data_list[i] ), true, 60);
+        }
+
+        line_series.setColor(Color.BLACK);
+        line_series.setThickness(2);
+        return line_series;
     }
 
 
